@@ -1,0 +1,29 @@
+[{
+        "Bill Date": "01/01/2020",
+        "InternetUsage": 0
+    },
+    {
+        "Bill Date": "01/02/2020",
+        "InternetUsage": 277
+    },
+    {
+        "Bill Date": "01/03/2020",
+        "InternetUsage": 343
+    }, {
+        "Bill Date": "01/04/2020",
+        "InternetUsage": 345
+    }, {
+        "Bill Date": "01/05/2020",
+        "InternetUsage": 255
+    }, {
+        "Bill Date": "01/06/2020",
+        "InternetUsage": 135
+    }, {
+        "Bill Date": "01/07/2020",
+        "InternetUsage": 201
+    }, {
+        "Bill Date": "01/08/2020",
+        "InternetUsage": 125
+    }
+
+]

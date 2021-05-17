@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Charts</title>
+    <style>
+        .tick line {
+            stroke: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // 取data
+        async function drawChart() {
+            const data = await d3.json('./data.json')
+            const dataset = data.objlist
+            // console.log(data)
+            // console.log(data.objlist[0])
+            // let dataSet = data.objlist.map(d => d.twDate);
+            // console.log(dataSet)
+            // setSVG();
+            // XYAxis();
+
+
+            const svg = d3.select('#wrapper').append('svg');
+            const margin = 60,
+                width = 980,
+                height = 600;
+
+            // svg.attr("width", width)
+            //     .attr("height", height)
+            // .attr("transform", "translate(0,0)");
+
+            // 使用viebox做RWD (但有點不準，換成用JS設定寬高)
+            svg.attr("viewBox", '0 0 1200 900')
+
+
+
+
+            // 先定義X軸數值(此用法無轉換X軸月份日期，之後帶折線圖時會出錯)
+            // const xAccessor = (d) => d.objlist.map(d => d.twDate.split('年')[1]).reverse();
+            // console.log(xAccessor(data))
+
+            const parseTime = d3.timeParse('%Y%m')
+            const xAccessor = (d) => parseTime(d["Date"]);
+            // 這邊會取得一個陣列的集合QQ，導致圖表在拆解時錯誤
+            // console.log(dataset)
+
+            // 先用forEach拆開陣列集合
+            // const foreachData = []
+            // xAccessor(data).forEach(function (i) {
+            //     // console.log(i)
+            //     foreachData.push(i)
+            // })
+            // console.log(foreachData[1])
+
+            // const date = [{
+            //     "Date": "202005"
+            // }, {
+            //     "Date": "202006"
+            // }, {
+            //     "Date": "202007"
+            // }]
+            // // const parseTime = d3.timeParse('%Y%m')
+            // const mapArray = date.map(d => parseTime(d["Date"]))
+            // const foreachData = []
+            // mapArray.forEach(function (i) {
+            //     foreachData.push(i)
+            // })
+            // console.log(foreachData[0])
+
+
+            // 制定x軸tick與範圍
+            let xScale = d3.scaleTime()
+                .domain(d3.extent(dataset, xAccessor))
+                .range([0, width - 80])
+
+            // axisBottom(xScale)是會用xScale定義的domain當作tick
+            let xAxis = d3.axisBottom(xScale);
+            xAxis = d3.axisBottom(xScale)
+                // .tickSizeInner(-height)是繪製X Grid軸線
+                .tickSizeInner(-height)
+                .tickSizeOuter(0)
+                .tickPadding(10);
+
+            const xAxisLine = svg.append('g')
+                .attr('class', 'xAxis')
+                .style('transform', `translate(${margin}px,${height-margin}px)`)
+                // tickFormat把tick數值換成西元國字(尚需轉成國字)
+                .call(xAxis.tickFormat(d3.timeFormat("%b")));
+
+            // 改變X軸顏色與粗細
+            xAxisLine.select(".domain")
+                .attr("stroke", "orange")
+                .attr("stroke-width", "3")
+                .attr("opacity", "0.8")
+
+
+            // 接著繪製y軸，一樣先定義Y軸數值
+            // const y1Accessor = (d) => dataset.map(d => d.UnitPrice);
+            const y1Accessor = d => d.UnitPrice
+            // console.log("y1", dataset.map(d => d.UnitPrice))
+            const y1Scale = d3.scaleLinear()
+                // .domain([d3.min(y1Accessor(data)), d3.max(y1Accessor(data))])
+                .domain(d3.extent(dataset, y1Accessor))
+                .range([height - margin * 2, 0])
+            // console.log(d3.extent(dataset, y1Accessor))
+
+            let yAxis = d3.axisLeft()
+                .scale(y1Scale)
+                .ticks(3)
+                // 繪製Y軸Grid線
+                .tickSizeInner(-(width + 20))
+                .tickSizeOuter(0)
+                .tickPadding(20)
+
+            const yAxisLine = svg.append('g')
+                .attr('class', 'yAxis')
+                .attr('transform', `translate(${margin}, ${margin})`)
+                .call(yAxis);
+
+            // 改變Y軸顏色與粗細
+            yAxisLine.select(".domain")
+                .attr("stroke", "orange")
+                .attr("stroke-width", "3")
+                .attr("opacity", "0.8");
+
+            // 加上Y軸標籤
+            const yAxisLabel = yAxisLine
+                .append("text")
+                .attr("class", "y-axis-label")
+                .text("單價 / 萬")
+                .attr("x", 20)
+                .attr("y", -20)
+                .style("fill", "black")
+            // .style('font-size', '16px')
+
+            // Y2，接著繪製第二道y軸(右側)，一樣先定義Y軸數值
+            // const y2Accessor = (d) => d.objlist.map(d => d.TradeHouse);
+            const y2Accessor = d => d.TradeHouse;
+            // console.log("y2", dataset.map(d => d.TradeHouse))
+            const y2Scale = d3.scaleLinear()
+                // .domain([d3.min(y2Accessor(data)), d3.max(y2Accessor(data))])
+                .domain([0, 10])
+                .range([height - margin * 2, 0])
+
+            let y2Axis = d3.axisRight()
+                .scale(y2Scale)
+                .ticks(6)
+                .tickSizeInner(0)
+                .tickSizeOuter(0)
+                .tickPadding(8)
+
+            const y2AxisLine = svg.append('g')
+                .attr('class', 'y2Axis')
+                .attr('transform', `translate(${width-20}, ${margin})`)
+                .call(y2Axis);
+
+            // 改變Y2軸顏色
+            y2AxisLine.select(".domain")
+                .attr("opacity", "0.4");
+
+            // 加上Y2軸標籤
+            const y2AxisLabel = y2AxisLine
+                .append("text")
+                .attr("class", "y2-axis-label")
+                .text("成交 / 戶")
+                .attr("x", -20)
+                .attr("y", -20)
+                .style("fill", "black")
+
+            // ============現在畫折線圖 (這邊取比例尺出問題，要再調整)
+
+            // // 將資料換成XY軸點數值  
+            const lineChart = d3
+                .line()
+                .x((d) => xScale(xAccessor(d)) + margin)
+                .y((d) => y1Scale(y1Accessor(d)) + margin)
+                .curve(d3.curveLinear);
+            // console.log(dataset.map(d => y1Scale(y1Accessor(d))))
+            console.log(dataset.map(d => xScale(xAccessor(d))))
+
+            const line = svg.append('g')
+                .append("path")
+                .attr("d", lineChart(dataset))
+                .attr("fill", "none")
+                .attr("stroke", "grey")
+                .attr("stroke-width", 2);
+            // console.log(lineChart(dataset))
+
+            // 折線圖圓點
+            svg.selectAll('.dot')
+                .data(dataset)
+                .enter()
+                .append('g')
+                .classed('dot', true)
+                .append('circle')
+                .attr('cx', d => xScale(xAccessor(d)) + margin)
+                .attr('cy', d => y1Scale(y1Accessor(d)) + margin)
+                .attr('r', 5)
+                .attr('fill', '#555')
+
+            // ============畫長條圖：成交戶數
+            // 繪製長條圖
+            const barChart = svg.append('g')
+                .selectAll('rect')
+                .data(dataset)
+                .join('rect')
+                .attr('x', (d) => xScale(xAccessor(d)) + margin)
+                .attr('y', (d) => y2Scale(y2Accessor(d)) + margin)
+                .attr('width', "20px")
+                .attr('height', (d) => (height - margin * 2) - y2Scale(y2Accessor(d)))
+                .attr('fill', '#FFA500')
+            // console.log(dataset.map(d => d))
+            // console.log(dataset.map(d => y2Scale(y2Accessor(d))))
+
+
+            // 位移 (還沒調整好)
+            // svg.select('.xAxis').selectAll('.tick text')
+            //     .attr("dx", 25);
+
+            // svg.select('.xAxis').selectAll('.tick line')
+            //     .attr('transform', 'translate(25, 0)');
+
+            // svg.selectAll('.xline')
+            //     .attr('transform', 'translate(20, 0)');
+
+            // svg.selectAll('.dot')
+            //     .attr('transform', 'translate(20, 0)');
+
+
+            // svg.append('g')
+            //     .selectAll('rect')
+            //     .data(data)
+            //     .join('rect')
+            //     .attr('fill', '#FFA500')
+            //     .attr('x', (d) => xScale(xAccessor(d)))
+            //     .attr('y', (d) => yScale(yAccessor(d)))
+            //     .attr('width', "20px")
+            //     .attr('height', (d) => yScale(yAccessor(d)))
+
+            // svg.append('g')
+            //     .selectAll('rect')
+            //     .data(data)
+            //     .join('rect')
+            //     .attr('fill', '#FFA500')
+            //     .attr('x', d => xScale(d.month))
+            //     .attr('y', d => yScale(d.count) + margin.top)
+            //     .attr('width', x.bandwidth())
+            //     .attr('height', d => y1(0) - y1(d.count))
+
+
+
+        }
+
+        // 設定畫布大小
+        function setSVG() {
+
+        }
+
+        // 畫比例尺
+        function XYAxis() {
+
+        }
+
+        // 坪價與成交互數資料設定
+        // const y1 = (d) => d.objlist.map(d => d.UnitPrice);
+        // const y2 = (d) => d.objlist.map(d => d.TradeHouse);
+        drawChart()
+    </script>
+</body>
+
+</html>

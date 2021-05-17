@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic</title>
+</head>
+
+<body>
+
+    <div class="chart-d3">
+        <div class="chart"></div>
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // 準備畫布
+        d3.select('.chart-d3')
+            .append('svg')
+            .attr({
+                "width": "75px",
+                "height": "75px"
+            });
+
+        // 準備資料
+        let data = [{
+            "name": "jinjin",
+            "num": 30
+        }, {
+            "name": "wenwen",
+            "num": 50
+        }, {
+            "name": "haha",
+            "num": 50
+        }, {
+            "name": "rain",
+            "num": 20
+        }];
+
+
+        // 把D3節點抽出來寫成function
+        var node = d3.select('.chart')
+            .selectAll('p')
+            .data(data)
+            .enter()
+            .append('p');
+
+        // 把更新資料另外寫成function
+        function update() {
+            node.html(function (d) {
+                    return d.name + '<br>' + d.num
+                })
+                .style('height', function (d) {
+                    return d.num + "px"
+                })
+                .style('background-color', 'orange')
+                .style("color", 'white')
+                .style('padding-left', '5px');
+        }
+
+        update()
+
+        setTimeout(function () {
+            // 問題!!!!!當更新data(變多)時，原本append的節點update()會出錯
+
+            // 資料變化時，就把新資料當作參數
+            // 新資料較多時就用enter加上多的資料
+            data = [{
+                "name": "OOO",
+                "num": 50
+            }, {
+                "name": "baBBBBbe",
+                "num": 60
+            }, {
+                "name": "CCCCC",
+                "num": 80
+            }, {
+                "name": "OOOOOOOOOOO",
+                "num": 80
+            }, {
+                "name": "ccc",
+                "num": 80
+            }, {
+                "name": "bbb",
+                "num": 80
+            }];
+            node.data(data).enter().append();
+            update();
+            node.style('background-color', 'blue');
+
+        }, 3000);
+
+
+        // 資料變化時，就把新資料當作參數
+        // 新資料較少時用exit移除多的資料
+        // 減少資料
+        // let dataLess = [{
+        //     "name": "dandan",
+        //     "num": 50
+        // }, {
+        //     "name": "babe",
+        //     "num": 60
+        // }];
+        // node.data(dataLess).exit().remove();
+        // update();
+    </script>
+</body>
+
+</html>
