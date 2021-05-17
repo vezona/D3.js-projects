@@ -88,6 +88,7 @@
                 .domain(monthX.map(d => d))
                 .range([margin.left, width - margin.right])
                 .padding(0.2);
+            // console.log([margin.left, width - margin.right])
 
             y1 = d3.scaleLinear()
                 .domain([0, d3.max(dataY1, d => d)])

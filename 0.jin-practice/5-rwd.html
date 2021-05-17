@@ -20,20 +20,20 @@
         }
 
         @media screen and (max-width: 600px) {
-            text {
+            /* text {
                 font-size: 2rem;
-            }
+            } */
         }
 
         @media screen and (max-width: 320px) {
-            text {
+            /* text {
                 font-size: 2rem;
-            }
+            } */
         }
     </style>
 </head>
 
-<body onresize="myFunction()">
+<body>
 
     <div id="wrapper">
 
@@ -44,27 +44,17 @@
     <script>
         const svg = d3.select('#wrapper').append('svg');
         let margin = 60,
-            width = 980,
-            height = 600;
+            width = 960,
+            height = 600,
+            radios = width / height;
 
         let data = [],
             dataset = [];
         // 先使用viewBox設定基本大小
-        svg.attr("viewBox", '0 0 1200 900')
+        svg.attr('width', width)
+        svg.attr('height', height)
 
-        // 設定RWD 的viewBox
-        function myFunction() {
-            let w = window.outerWidth;
-            let h = window.outerHeight;
-            let txt = "Window size: width=" + w + ", height=" + h;
-            // console.log(txt)
-            if (w < 600) {
-                svg.attr("viewBox", '0 0 1050 900')
-            } else {
-                svg.attr("viewBox", '0 0 1200 900')
-            }
 
-        }
 
         // 取data
         async function drawChart() {
@@ -77,7 +67,6 @@
             setXYAxis()
 
         }
-
 
         // 繪製XY軸
         function setXYAxis() {
@@ -117,13 +106,14 @@
             // 制定x軸tick與範圍
             let xScale = d3.scaleTime()
                 .domain(d3.extent(dataset, xAccessor))
-                .range([0, width - 80])
+                // .domain(dataset.map((d) => parseTime(d["Date"]))) 要搭配scaleBand()
+                .range([0, width - margin * 2])
 
             // axisBottom(xScale)是會用xScale定義的domain當作tick
             let xAxis = d3.axisBottom(xScale);
             xAxis = d3.axisBottom(xScale)
                 // .tickSizeInner(-height)是繪製X Grid軸線
-                .tickSizeInner(-height)
+                .tickSizeInner(-(height - margin * 2))
                 .tickSizeOuter(0)
                 .tickPadding(10);
 
@@ -146,15 +136,16 @@
             // console.log("y1", dataset.map(d => d.UnitPrice))
             const y1Scale = d3.scaleLinear()
                 // .domain([d3.min(y1Accessor(data)), d3.max(y1Accessor(data))])
-                .domain(d3.extent(dataset, y1Accessor))
+                // .domain(d3.extent(dataset, y1Accessor))
+                .domain([0, 70])
                 .range([height - margin * 2, 0])
             // console.log(d3.extent(dataset, y1Accessor))
 
             let yAxis = d3.axisLeft()
                 .scale(y1Scale)
-                .ticks(3)
+                .ticks(6)
                 // 繪製Y軸Grid線
-                .tickSizeInner(-(width + 20))
+                .tickSizeInner(-(width - margin * 2))
                 .tickSizeOuter(0)
                 .tickPadding(20)
 
@@ -197,7 +188,7 @@
 
             const y2AxisLine = svg.append('g')
                 .attr('class', 'y2Axis')
-                .attr('transform', `translate(${width-20}, ${margin})`)
+                .attr('transform', `translate(${width-margin}, ${margin})`)
                 .call(y2Axis);
 
             // 改變Y2軸顏色
@@ -252,7 +243,7 @@
                 .join('rect')
                 .attr('x', (d) => xScale(xAccessor(d)) + margin)
                 .attr('y', (d) => y2Scale(y2Accessor(d)) + margin)
-                .attr('width', "20px")
+                .attr('width', "30px")
                 .attr('height', (d) => (height - margin * 2) - y2Scale(y2Accessor(d)))
                 .attr('fill', '#FFA500')
             // console.log(dataset.map(d => d))

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test Axis</title>
+</head>
+
+<body>
+    <div id="wrapper">
+
+        <p>來段正常的文字吧</p>
+    </div>
+
+    <svg id="chart"></svg>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        const svg = d3.select('#wrapper').append('svg');
+        let margin = 60,
+            width = 600,
+            height = 300,
+            radios = width / height;
+
+        let data = [],
+            dataset = [];
+        // 先使用viewBox設定基本大小
+        svg.attr('width', width)
+        svg.attr('height', height)
+
+
+
+        // 取data
+        async function drawChart() {
+            const getData = await d3.json('./data.json')
+            data = getData;
+            dataset = data.objlist.map(d => d)
+
+            setXYAxis()
+        }
+
+        // 繪製XY軸
+        function setXYAxis() {
+            // 先定義X軸數值(此用法無轉換X軸月份日期，之後帶折線圖時會出錯)
+            // const xAccessor = (d) => d.objlist.map(d => d.twDate.split('年')[1]).reverse();
+            // console.log(xAccessor(data))
+
+            const parseTime = d3.timeParse('%Y%m')
+            const xAccessor = (d) => parseTime(d["Date"]);
+            // console.log(d3.max(dataset.map((d) => parseTime(d["Date"]))))
+            // 制定x軸tick與範圍
+            let xScale = d3.scaleBand()
+                .domain(dataset.map((d) => parseTime(d["Date"])))
+                .range([0, width - margin * 3])
+            let a = d3.extent(dataset, xAccessor);
+
+
+            // axisBottom(xScale)是會用xScale定義的domain當作tick
+            let xAxis = d3.axisBottom(xScale);
+            xAxis = d3.axisBottom(xScale)
+                // .tickSizeInner(-height)是繪製X Grid軸線
+                .tickSizeInner(10)
+                .tickSizeOuter(10)
+                .tickPadding(10);
+
+            const xAxisLine = svg.append('g')
+                .attr('class', 'xAxis')
+                .style('transform', `translate(${margin}px,${height-margin}px)`)
+                // tickFormat把tick數值換成西元國字(尚需轉成國字)
+                .call(xAxis.tickFormat(d3.timeFormat("%b")));
+
+        }
+
+
+        drawChart()
+
+        // const monthX = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+        // function renderXY() {
+        //     const svgChart = d3.select('#chart');
+        //     let x, y1, y2;
+        //     let xAxis, yAxis;
+        //     let margin = {
+        //         top: 50,
+        //         left: 100,
+        //         bottom: 0,
+        //         right: 0,
+        //     }
+
+        //     let width = window.innerWidth - margin.left;
+        //     let height = window.innerHeight;
+
+        //     svgChart.attr("width", width).attr("height", height);
+
+        //     // x軸
+        //     x = d3.scaleBand()
+        //         .domain(monthX.map(d => d))
+        //         .range([margin.left, width - margin.right])
+        //     // .padding(0.2);
+        //     // console.log([margin.left, width - margin.right])
+
+
+        //     xAxis = d3.axisBottom(x).tickSizeOuter(0);
+
+
+        //     svgChart.append('g')
+        //         .attr('class', 'xAxis')
+        //         .attr('transform', `translate(0,0)`)
+        //         .call(xAxis);
+
+
+        // }
+
+        // renderXY()
+    </script>
+</body>
+
+</html>
