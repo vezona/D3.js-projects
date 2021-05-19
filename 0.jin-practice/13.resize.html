@@ -47,33 +47,51 @@
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script>
-        async function rendering() {
+        const wrapper = d3.select('#wrapper');
+        const svg = wrapper.append('svg');
+
+        // 取到的資料
+        let data = [], //get資料
+            dataset = [], //取出XY軸要用的陣列資料
+            xData = [],
+            y1Data = [],
+            y2Data = [];
+
+        // 先取資料
+        async function getData() {
+            const getData = await d3.json('./data.json'),
+                getDataset = getData.objlist.map(d => d),
+                getFilterPriceData = getDataset.filter(d => d.UnitPrice !== 0);
+
+            // const XData = getData.objlist.map(d => d.Date)
+            // console.log(XData)
+            // 資料存到全域
+            data = getData;
+            dataset = getDataset;
+            filterPriceData = getFilterPriceData;
+
+            rendering()
+
+        }
+
+        function rendering() {
             let svgwidth = parseInt(d3.select('#wrapper').style('width')),
                 svgheight = parseInt(d3.select('#wrapper').style('height')),
                 margin = 60,
-                chartWidth = svgwidth - margin * 2,
+                chartWidth = svgwidth - margin,
                 chartHeight = svgheight - margin * 2;
             // console.log(svgheight)
 
             // 限定寬高不可以小於200
             chartWidth = svgwidth < 200 ? 200 : chartWidth;
-            chartHeight = svgheight < 200 ? 200 : chartHeight;
+            chartHeight = svgheight < 300 ? 300 : chartHeight;
             console.log(chartWidth, chartHeight)
 
-
             // 繪製畫布
-            const wrapper = d3.select('#wrapper')
-            wrapper.html(''); //刪掉重rend
-            const svg = wrapper.append('svg');
+            svg.html(''); //刪掉重rend
 
             svg.attr('width', chartWidth + margin * 2)
                 .attr('height', chartHeight + margin * 2)
-
-            // 取資料
-            const data = await d3.json('./data.json'),
-                dataset = data.objlist.map(d => d),
-                filterPriceData = dataset.filter(d => d.UnitPrice !== 0);
-            // console.log(dataset)
 
             // X軸
             // 設定X軸參數
@@ -235,17 +253,15 @@
                 .join('rect')
                 .attr('x', (d) => xScale(xAccessor(d)) + margin)
                 .attr('y', (d) => y2Scale(y2Accessor(d)))
-                .attr('width', "30px")
+                .attr('width', '3%')
                 .attr('height', (d) => chartHeight - y2Scale(y2Accessor(d)))
                 .attr('fill', '#FFA500')
             // console.log(dataset.map(d => y2Scale(y2Accessor(d))))
 
-
-
         }
 
+        getData()
         d3.select(window).on('resize', rendering);
-        rendering()
     </script>
 </body>
 
