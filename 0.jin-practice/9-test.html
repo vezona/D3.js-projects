@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9</title>
+    <style>
+        .tick line {
+            stroke: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+    </div>
+
+    <svg width="500" height="120">
+        <path id="segments-line" />
+        <path id="gap-line" />
+    </svg>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // 建立svg畫布
+        const svg = d3.select('#wrapper').append('svg');
+        let svgwidth = window.innerWidth,
+            svgheight = 500,
+            margin = 60,
+            chartWidth = svgwidth - margin,
+            chartHeight = svgheight - margin * 2;
+
+        let data = [{
+                "Date": "202102",
+                "twDate": "110年2月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202101",
+                "twDate": "110年1月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202012",
+                "twDate": "109年12月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202011",
+                "twDate": "109年11月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202010",
+                "twDate": "109年10月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202009",
+                "twDate": "109年9月",
+                "UnitPrice": 53.7500,
+                "TradeHouse": 2,
+                "Radius": "0"
+            },
+            {
+                "Date": "202008",
+                "twDate": "109年8月",
+                "UnitPrice": 61.8000,
+                "TradeHouse": 1,
+                "Radius": "0"
+            },
+            {
+                "Date": "202007",
+                "twDate": "109年7月",
+                "UnitPrice": 0.0000,
+                "TradeHouse": 0,
+                "Radius": "0"
+            },
+            {
+                "Date": "202006",
+                "twDate": "109年6月",
+                "UnitPrice": 54.3000,
+                "TradeHouse": 1,
+                "Radius": "0"
+            },
+            {
+                "Date": "202005",
+                "twDate": "109年5月",
+                "UnitPrice": 51.1000,
+                "TradeHouse": 1,
+                "Radius": "0"
+            },
+            {
+                "Date": "202004",
+                "twDate": "109年4月",
+                "UnitPrice": 54.4000,
+                "TradeHouse": 1,
+                "Radius": "0"
+            },
+            {
+                "Date": "202003",
+                "twDate": "109年3月",
+                "UnitPrice": 53.3667,
+                "TradeHouse": 3,
+                "Radius": "0"
+            }
+        ];
+
+
+        // 建立svg大小
+        svg.attr('width', svgwidth)
+            .attr('height', svgheight);
+
+
+        // X軸繪製
+        function drawChart() {
+            const xAccessor = d => parseInt(d.Date.slice(4))
+
+            let xScale = d3.scaleBand()
+                // .domain(xAccessor(dataset))
+                .domain(data.map(d => parseInt(d.Date.slice(4))))
+                .range([0, chartWidth - margin])
+
+            // X軸線與ticks
+            let xAxis = d3.axisBottom(xScale) //tick在axis下方的線，根據xScale給的範圍來訂
+                .tickSizeOuter(0) //最左右兩側不用tick的線
+                .tickSizeInner(-(chartHeight - margin)) //軸線向內(上)延伸，比照繪圖區高度
+                .tickPadding(10) //tick text與軸線拉開距離
+
+            // ========
+            const linechart = d3.line()
+                // .x(d => parseInt(d.Date.slice(4)))
+                .x((d) => xScale(xAccessor(d)))
+                .y(d => d.UnitPrice).defined(d => d.UnitPrice > 0)
+                .curve(d3.curveLinear);
+
+            let filteredData = data.filter(linechart.defined());
+            // const dataset = data.map(d => d.UnitPrice)
+            // console.log(data.map(d => parseInt(d.Date.slice(4))))
+            // console.log(linechart(data))
+            // console.log(linechart(filteredData))
+
+            svg.append("path").attr('d', linechart(data))
+                .attr("fill", "none")
+                .attr("stroke", "green")
+                .attr("stroke-width", 2);
+
+            svg.append("path").attr('d', linechart(filteredData))
+                .attr("fill", "none")
+                .attr("stroke", "orange")
+                .style("stroke-dasharray", "4,4");
+
+        }
+
+        drawChart()
+
+        // 示範
+        // var line = d3.line()
+        //     .defined(function (d) {
+        //         return d[1] !== null;
+        //     });
+
+        // var data = [
+        //     [0, 80],
+        //     [50, 20],
+        //     [100, 50],
+        //     [150, 30],
+        //     [200, 40],
+        //     [250, 90],
+        //     [300, null],
+        //     [350, null],
+        //     [400, 20],
+        //     [450, 70],
+        //     [500, 60]
+        // ];
+
+        // var filteredData = data.filter(line.defined());
+
+        // d3.select('#segments-line').attr('d', line(data))
+        //     .attr("fill", "none")
+        //     .attr("stroke", "green")
+        //     .attr("stroke-width", 2);
+
+        // d3.select('#gap-line').attr('d', line(filteredData))
+        //     .attr("fill", "none")
+        //     .attr("stroke", "orange");
+    </script>
+</body>
+
+</html>

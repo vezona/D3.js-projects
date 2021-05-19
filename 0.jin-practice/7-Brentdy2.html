@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brentdy2</title>
+</head>
+
+<body>
+    <div id="wrapper"></div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+        // 建立svg畫布
+        const svg = d3.select('#wrapper').append('svg');
+        let svgwidth = window.innerWidth,
+            svgheight = 500,
+            margin = 60,
+            chartWidth = svgwidth - margin,
+            chartHeight = svgheight - margin * 2;
+
+        let monthDivide = 12,
+            yAxisDivide = chartHeight / 5;
+
+        let data = [], //get資料
+            dataset = [], //取出XY軸要用的陣列資料
+            xData = [],
+            y1Data = [],
+            y2Data = [],
+            filterPriceData = []; //折線圖Y1單價過濾0
+
+
+        // 建立svg大小
+        svg.attr('width', svgwidth)
+            .attr('height', svgheight);
+
+        // 取資料
+        async function getData() {
+            const getData = await d3.json('./data.json'),
+                getDataset = getData.objlist,
+                getFilterPriceData = getDataset.filter(d => d.UnitPrice !== 0);
+
+            const XData = getData.objlist.map(d => d.Date)
+            // console.log(XData)
+            // 資料存到全域
+            data = getData;
+            dataset = getDataset;
+            filterPriceData = getFilterPriceData;
+
+            drawXaxis()
+            drawY1axis()
+            drawY2axis()
+        }
+
+        // X軸繪製
+        function drawXaxis() {
+            /* 比例 */
+            // x軸 讓"12月份等分"對比"圖表寬度"
+            let xScale = d3.scaleLinear()
+                .domain([0, monthDivide]) // 0,12
+                .range([0, chartWidth]);
+
+            svgContent = svg.append('g').attr("class", "svg-content");
+            xAxis = svgContent.append('g').attr("class", "x-axis");
+            // y2Axis = svgContent.append('g').attr("class", "y2-axis");
+            // yAxis = svgContent.append('g').attr("class", "y-axis");
+            // rect = svgContent.append('g').attr("class", "rect");
+            // pathBox = svgContent.append('g').attr("class", "pathBox");
+            // circleBox = svgContent.append('g').attr("class", "circleBox");
+
+            // X軸
+            xAxisGroups = xAxis.selectAll("g")
+                .data(dataset)
+                .enter()
+                .append('g')
+                .attr('class', 'x-tick')
+                .attr('transform', function (d, i) {
+                    let distan = chartWidth / monthDivide * i;
+                    return `translate(${distan},0)`;
+                });
+
+            xAxisGroups // 軸線繪製
+                .append('line')
+                .attr("x1", 0).attr("x2", 0)
+                .attr("y1", 0).attr("y2", chartHeight)
+                .attr("fill", "none")
+                .attr("stroke", "#ccc").attr("stroke-width", "1")
+                .attr('class', function (d, i) {
+                    if (i === 0) {
+                        return 'first-line';
+                    }
+                });
+
+            xAxisGroups // 月份文字
+                .append('text')
+                .text(d => d.twDate.split('年')[1])
+                .attr("y", chartHeight + 20 + 'px')
+                .attr("x", xScale(12) / monthDivide / 2 + 'px') // 需放比例 xScale
+                .attr("text-anchor", "middle");
+
+            // // 設定X軸參數
+            // const xAccessor = (d) => d.map(d => parseInt(d.Date.slice(4)))
+            // // console.log(xAccessor(dataset))
+
+            // // 設定X軸範圍:月份
+            // let xScale = d3.scaleBand()
+            //     .domain([0, monthDivide]) //0,12
+            //     .range([0, chartWidth])
+
+            // // X軸線與ticks
+            // let xAxis = d3.axisBottom(xScale) //tick在axis下方的線，根據xScale給的範圍來訂
+            //     .tickSizeOuter(0) //最左右兩側不用tick的線
+            //     .tickSizeInner(-(chartHeight - margin)) //軸線向內(上)延伸，比照繪圖區高度
+            //     .tickPadding(10) //tick text與軸線拉開距離
+
+            // // 繪製X軸
+            // const xAxisLine = svg.append('g')
+            //     .attr('class', 'xAxis')
+            //     .style('transform', `translate(${margin}px,${chartHeight}px)`) //讓X軸到最下方
+            //     .call(xAxis.tickFormat(function (d) { //把設定好的軸線跟ticks接過來，用tickFormat綁上文字
+            //         return d + "月";
+            //     }))
+
+            // // X軸線位移(左右終點)
+            // // svg.select('.xAxis').selectAll('.tick text') //先挪文字到軸線中間
+            // //     .attr("dx", `${margin/4}`);
+
+            // svg.select('.xAxis').selectAll('.tick line')
+            //     .attr('transform', `translate(${margin/4}, 0)`)
+
+
+            // // 改變X軸顏色與粗細
+            // xAxisLine.select(".domain")
+            //     .attr("stroke", "orange")
+            //     .attr("stroke-width", "3")
+            //     .attr("opacity", "0.8")
+
+        }
+
+        // Y1軸繪製:每坪單價 UnitPrice
+        function drawY1axis() {
+            // 設定Y1軸參數
+            const y1Accessor = (d) => dataset.map(d => d.UnitPrice)
+            console.log(y1Accessor(dataset))
+
+            // 設定Y1軸範圍:坪數/萬
+            const y1Scale = d3.scaleLinear()
+                .domain([0, d3.max(y1Accessor(data)) + 10]) //+10以免最高點超過座標軸範圍
+                .range([chartHeight, margin]) //上方留點範圍加標籤
+
+            // Y1軸線與ticks
+            const y1Axis = d3.axisLeft()
+                .scale(y1Scale)
+                .ticks(6)
+                .tickSizeOuter(0) //最左右兩側不用tick的線
+                .tickSizeInner(-(chartWidth - margin)) //軸線向內(上)延伸，比照繪圖區高度
+                .tickPadding(10) //tick text與軸線拉開距離
+
+            // 繪製Y1軸
+            const y1AxisLine = svg.append('g')
+                .attr('class', 'y1Axis')
+                .style('transform', `translate(${margin}px,0)`) //調整Y1軸位置
+                .call(y1Axis);
+
+            // 加上Y1標籤           
+            const y1AxisLabel = y1AxisLine
+                .append("text")
+                .attr("class", "y1axis-label")
+                .text("單價 / 萬")
+                .attr("x", margin / 3)
+                .attr("y", 40)
+                .style("fill", "black")
+
+            // 改變Y軸顏色與粗細
+            y1AxisLine.select(".domain")
+                .attr("stroke", "orange")
+                .attr("stroke-width", "3")
+                .attr("opacity", "0.8");
+        }
+
+        // Y2軸繪製:賣出戶數 TradeHouse
+        function drawY2axis() {
+            // 設定Y2軸參數
+            const y2Accessor = (d) => dataset.map(d => d.TradeHouse)
+
+            // 設定Y2軸範圍:成交/戶數
+            const y2Scale = d3.scaleLinear()
+                .domain([0, d3.max(y2Accessor(data)) + 2]) //+2以免最高點超過座標軸範圍
+                .range([chartHeight, margin]) //上方留點範圍加標籤
+
+            // Y2軸線與ticks
+            const y2Axis = d3.axisRight()
+                .scale(y2Scale)
+                .ticks(6) //設定要有幾個tick
+                .tickSizeOuter(0) //最左右兩側不用tick的線
+                .tickSizeInner(0)
+                .tickPadding(10)
+
+            // 繪製Y1軸
+            const y2AxisLine = svg.append('g')
+                .attr('class', 'y2Axis')
+                .style('transform', `translate(${chartWidth}px,0)`) //調整Y2軸位置，留20給位移後的位置
+                .call(y2Axis);
+        }
+        getData()
+    </script>
+</body>
+
+</html>

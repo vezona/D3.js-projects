@@ -44,12 +44,13 @@
     <script>
         const svg = d3.select('#wrapper').append('svg');
         let margin = 60,
-            width = 960,
-            height = 600,
-            radios = width / height;
+            width = window.innerWidth,
+            height = 500,
+            radio = width / height;
 
         let data = [],
-            dataset = [];
+            dataset = [],
+            filterData = [];
         // 先使用viewBox設定基本大小
         svg.attr('width', width)
         svg.attr('height', height)
@@ -59,10 +60,14 @@
         // 取data
         async function drawChart() {
             const getData = await d3.json('./data.json')
+            // 用filter skip掉空的數值
+            const filtered = getData.objlist.filter(d => d.UnitPrice !== 0)
             // const getDataset = data.objlist
             data = getData;
             // console.log(data.objlist.map(d => d))
             dataset = data.objlist.map(d => d)
+            filterData = filtered;
+            // console.log(filterData)
 
             setXYAxis()
 
@@ -76,6 +81,7 @@
 
             const parseTime = d3.timeParse('%Y%m')
             const xAccessor = (d) => parseTime(d["Date"]);
+            // console.log(dataset.map((d) => parseTime(d["Date"])))
             // 這邊會取得一個陣列的集合QQ，導致圖表在拆解時錯誤
             // console.log(dataset)
 
@@ -104,18 +110,17 @@
 
 
             // 制定x軸tick與範圍
-            let xScale = d3.scaleTime()
-                .domain(d3.extent(dataset, xAccessor))
-                // .domain(dataset.map((d) => parseTime(d["Date"]))) 要搭配scaleBand()
+            let xScale = d3.scaleBand()
+                // .domain(d3.extent(dataset, xAccessor))
+                .domain(dataset.map((d) => parseTime(d["Date"]))) //要搭配scaleBand()
                 .range([0, width - margin * 2])
 
             // axisBottom(xScale)是會用xScale定義的domain當作tick
-            let xAxis = d3.axisBottom(xScale);
-            xAxis = d3.axisBottom(xScale)
+            let xAxis = d3.axisBottom(xScale)
                 // .tickSizeInner(-height)是繪製X Grid軸線
                 .tickSizeInner(-(height - margin * 2))
                 .tickSizeOuter(0)
-                .tickPadding(10);
+                .tickPadding(10)
 
             const xAxisLine = svg.append('g')
                 .attr('class', 'xAxis')
@@ -173,7 +178,7 @@
             // Y2，接著繪製第二道y軸(右側)，一樣先定義Y軸數值
             // const y2Accessor = (d) => d.objlist.map(d => d.TradeHouse);
             const y2Accessor = d => d.TradeHouse;
-            // console.log("y2", dataset.map(d => d.TradeHouse))
+            console.log("y2", dataset.map(d => d.TradeHouse))
             const y2Scale = d3.scaleLinear()
                 // .domain([d3.min(y2Accessor(data)), d3.max(y2Accessor(data))])
                 .domain([0, 10])
@@ -212,12 +217,16 @@
                 .x((d) => xScale(xAccessor(d)) + margin)
                 .y((d) => y1Scale(y1Accessor(d)) + margin)
                 .curve(d3.curveLinear);
+            // console.log(dataset.map(d => y1Accessor(d)))
             // console.log(dataset.map(d => y1Scale(y1Accessor(d))))
             // console.log(dataset.map(d => xScale(xAccessor(d))))
 
             const line = svg.append('g')
                 .append("path")
-                .attr("d", lineChart(dataset))
+                // 未跳過0的資料
+                // .attr("d", lineChart(dataset))
+                // 跳過0的資料
+                .attr("d", lineChart(filterData))
                 .attr("fill", "none")
                 .attr("stroke", "grey")
                 .attr("stroke-width", 2);
@@ -225,7 +234,10 @@
 
             // 折線圖圓點
             svg.selectAll('.dot')
-                .data(dataset)
+                // 未跳過0的資料
+                // .data(dataset)
+                // 跳過0的資料
+                .data(filterData)
                 .enter()
                 .append('g')
                 .classed('dot', true)
@@ -247,7 +259,7 @@
                 .attr('height', (d) => (height - margin * 2) - y2Scale(y2Accessor(d)))
                 .attr('fill', '#FFA500')
             // console.log(dataset.map(d => d))
-            // console.log(dataset.map(d => y2Scale(y2Accessor(d))))
+            console.log(dataset.map(d => y2Scale(y2Accessor(d))))
 
 
             // 位移 (還沒調整好)
@@ -255,7 +267,7 @@
             //     .attr("dx", 25);
 
             // svg.select('.xAxis').selectAll('.tick line')
-            //     .attr('transform', 'translate(25, 0)');
+            //     .attr('transform', 'translate(-10, 0)');
 
             // svg.selectAll('.xline')
             //     .attr('transform', 'translate(20, 0)');
