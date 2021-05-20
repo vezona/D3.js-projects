@@ -32,6 +32,20 @@
             overflow: hidden;
         }
 
+        .tick line {
+            stroke: #ddd;
+        }
+
+        .dot1 circle:hover {
+            fill: orange;
+            cursor: pointer;
+        }
+
+        .dot2 circle:hover {
+            fill: green;
+            cursor: pointer;
+        }
+
         /* 
         svg {
             outline: 1px solid red;
@@ -91,13 +105,13 @@
             margin = 60,
                 chartWidth = svgwidth - margin,
                 chartHeight = svgheight - margin * 2;
-            console.log(svgwidth, svgheight)
+            // console.log(svgwidth, svgheight)
 
             // 限定寬高不可以小於200
             chartWidth = svgwidth < 200 ? 200 : chartWidth;
             chartHeight = svgheight < 300 ? 230 : chartHeight;
             chartHeight = chartHeight > 500 ? 450 : chartHeight;
-            console.log(chartWidth, chartHeight)
+            // console.log(chartWidth, chartHeight)
 
             // 繪製畫布
             svg.html(''); //刪掉重rend
@@ -134,16 +148,17 @@
                 }
             })
 
+            let xAxisWeb;
             // 手機板跟電腦版的tick數量改動
             if (svgwidth < 500) {
                 // .tickValues() 控制哪些tick要顯示
                 // .tickValues(xMobileTicks)
-                var xAxisWeb = xAxis.tickFormat(function (d) { //把設定好的軸線跟ticks接過來，用tickFormat綁上文字
+                xAxisWeb = xAxis.tickFormat(function (d) { //把設定好的軸線跟ticks接過來，用tickFormat綁上文字
                     return d + "月";
                 }).tickValues(xMobileTicks);
 
             } else {
-                var xAxisWeb = xAxis.tickFormat(function (d) { //把設定好的軸線跟ticks接過來，用tickFormat綁上文字
+                xAxisWeb = xAxis.tickFormat(function (d) { //把設定好的軸線跟ticks接過來，用tickFormat綁上文字
                     return d + "月";
                 });
             }
@@ -272,7 +287,7 @@
                 .data(filteredData)
                 .enter()
                 .append('g')
-                .classed('dot', true)
+                .classed('dot1', true)
                 .append('circle')
                 .attr('cx', d => xScale(xAccessor(d)) + margin)
                 .attr('cy', d => y1Scale(y1Accessor(d)))
