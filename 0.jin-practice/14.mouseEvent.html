@@ -119,12 +119,7 @@
             }
         ];
 
-        // We're passing in a function in d3.max to tell it what we're maxing (x value)
-        // let xScale = d3.scale.linear()
-        //     .domain([0, d3.max(dataset, function (d) {
-        //         return d.x + 10;
-        //     })])
-        //     .range([margin.left, w - margin.right]);
+
 
         const xScale = d3.scaleLinear()
             .domain([0, d3.max(dataset, function (d) {
@@ -132,24 +127,12 @@
             })])
             .range([margin.left, w - margin.right]);
 
-        // console.log(d3.max(dataset, function (d) {
-        //     return d.x + 10;
-        // }))
-        // var yScale = d3.scale.linear()
-        //     .domain([0, d3.max(dataset, function (d) {
-        //         return d.y + 10;
-        //     })])
-        //     .range([margin.top, h - margin.bottom]); // Set margins for y specific
-
         const yScale = d3.scaleLinear()
             .domain([0, d3.max(dataset, function (d) {
                 return d.y + 10;
             })])
             .range([margin.top, h - margin.bottom])
 
-        // // Add a X and Y Axis (Note: orient means the direction that ticks go, not position)
-        // var xAxis = d3.svg.axis().scale(xScale).orient("top");
-        // var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
         const xAxis = d3.axisTop()
             .scale(xScale)
@@ -168,15 +151,6 @@
             .attr('transform', `translate(${margin.left}, 0)`)
             .call(yAxis)
 
-        // const circleAttrs = {
-        //     cx: function (d) {
-        //         return xScale(d.x);
-        //     },
-        //     cy: function (d) {
-        //         return yScale(d.y);
-        //     },
-        //     r: radius
-        // };
 
         svg.selectAll("circle")
             .data(dataset)
@@ -238,8 +212,8 @@
             svg.append("text")
                 .attr('class', 'hoverTextInfo')
                 // .attr('id', "t" + d.x + "-" + d.y) //這邊要加is是為了等等mouseLeave選定誰的text要消失(不成功)
-                .attr('x', d.x - 10)
-                .attr('y', d.y - 10)
+                .attr('x', d.x + 20)
+                .attr('y', d.y - 20)
                 .text(function () {
                     return [d.x, d.y]; // Value of the text
                 })

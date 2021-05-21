@@ -74,25 +74,18 @@
 
         // 先取資料
         async function getData() {
-            const getData = await d3.json('./data.json'),
-                getDataset = getData.objlist.map(d => d),
-                getFilterPriceData = getDataset.filter(d => d.UnitPrice !== 0);
+            data = await d3.json('./data.json'),
+                dataset = data.objlist.map(d => d),
+                filterPriceData = dataset.filter(d => d.UnitPrice !== 0),
+                xData = dataset.map(d => parseInt(d.Date.slice(4)));
 
             // const XData = getData.objlist.map(d => d.Date)
             // console.log(XData)
-            // 資料存到全域
-            data = getData;
-            dataset = getDataset;
-            filterPriceData = getFilterPriceData;
-            xData = dataset.map(d => parseInt(d.Date.slice(4)))
 
             // 取第二筆資料畫折線圖
-            const getData2 = await d3.json('./data2.json'),
-                getDataset2 = getData2.objlist.map(d => d),
-                getFilterPriceData2 = getDataset2.filter(d => d.UnitPrice !== 0);
-
-            dataset2 = getDataset2;
-            filterPriceData2 = getFilterPriceData2;
+            data2 = await d3.json('./data2.json'),
+                dataset2 = data2.objlist.map(d => d),
+                filterPriceData2 = dataset2.filter(d => d.UnitPrice !== 0);
 
             rendering()
 
