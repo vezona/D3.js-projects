@@ -110,10 +110,11 @@
 
         // 呈現圖表
         function rendering() {
+            // console.log(data)
             let svgwidth = parseInt(d3.select('#wrapper').style('width')),
                 // svgheight = parseInt(d3.select('#wrapper').style('height')),
-                svgheight = svgwidth * 0.7
-            margin = 60,
+                svgheight = svgwidth * 0.7,
+                margin = 60,
                 chartWidth = svgwidth - margin,
                 chartHeight = svgheight - margin * 2;
             // console.log(svgwidth, svgheight)
@@ -267,8 +268,14 @@
 
             // 繪製Y軸折線圖
             const lineChart = d3.line()
-                .x((d) => xScale(xAccessor(d)) + margin)
-                .y((d) => y1Scale(y1Accessor(d)))
+                .x((d) => {
+                    // console.log(xScale(xAccessor(d)))
+                    return xScale(xAccessor(d)) + margin
+                })
+                .y((d) => {
+                    console.log(y1Scale(y1Accessor(d)))
+                    return y1Scale(y1Accessor(d))
+                })
                 .defined(d => d.UnitPrice > 0)
                 .curve(d3.curveLinear); //決定曲線線條
             // console.log(dataset.map(d => y1Scale(y1Accessor(d))))
@@ -281,6 +288,8 @@
                 .attr("fill", "none")
                 .attr("stroke", "orange")
                 .attr("stroke-width", 2);
+
+            // console.log(dataset)
 
             let filteredData = dataset.filter(lineChart.defined());
 
@@ -311,7 +320,10 @@
                 .selectAll('rect')
                 .data(dataset)
                 .join('rect')
-                .attr('x', (d) => xScale(xAccessor(d)) + (margin))
+                .attr('x', (d) => {
+                    // console.log(xAccessor(d))
+                    return xScale(xAccessor(d)) + (margin)
+                })
                 .attr('y', (d) => y2Scale(y2Accessor(d)))
                 .attr('width', xScale.bandwidth() + 5)
                 .attr('height', (d) => chartHeight - y2Scale(y2Accessor(d)))

@@ -1,0 +1,23 @@
+{
+    "code": 200,
+    "msg": "success",
+    "objlist": [{
+            "name": "溫州街華夏",
+            "twDate": "110年1月",
+            "article": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est saepe, incidunt odit, dolore omnis ullam ut ea modieos consectetur eveniet eligendi,nulla dignissimos cum blanditiis!Harum voluptas,corporis consequunturvoluptatem itaque possimus porro cum quas nobis magni commodi aspernatur magnam explicabo voluptate quaerat ipsaiure at nostrum vitae vel.",
+            "rooms": 2
+        },
+        {
+            "name": "大安區公寓",
+            "twDate": "110年2月",
+            "article": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est saepe, incidunt odit, dolore omnis ullam ut ea modieos consectetur eveniet eligendi,nulla dignissimos cum blanditiis!Harum voluptas,corporis consequunturvoluptatem itaque possimus porro cum quas nobis magni commodi aspernatur magnam explicabo voluptate quaerat ipsaiure at nostrum vitae vel.",
+            "rooms": 1
+        },
+        {
+            "name": "中正街電梯大樓",
+            "twDate": "110年3月",
+            "article": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Est saepe, incidunt odit, dolore omnis ullam ut ea modieos consectetur eveniet eligendi,nulla dignissimos cum blanditiis!Harum voluptas,corporis consequunturvoluptatem itaque possimus porro cum quas nobis magni commodi aspernatur magnam explicabo voluptate quaerat ipsaiure at nostrum vitae vel.",
+            "rooms": 3
+        }
+    ]
+}

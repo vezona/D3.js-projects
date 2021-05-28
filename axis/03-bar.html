@@ -99,7 +99,10 @@
       .append('g')
       .classed('bar', true)
       .append('rect')
-      .attr('x', (d, i) => xScale(i) + margin)
+      .attr('x', (d, i) => {
+        console.log(xScale(i))
+        return xScale(i) + margin
+      })
       .attr('y', (d, i) => height - yScale(d) + margin)
       .attr('height', (d, i) => yScale(d))
       .attr('width', '5%')

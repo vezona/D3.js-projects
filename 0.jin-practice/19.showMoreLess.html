@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19.JS show more less</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <!-- 厲害範例 http://jsfiddle.net/1p0ne52o/ 
+
+        https://stackoverflow.com/questions/29698072/truncate-text-with-javascript-with-read-more-and-read-less/29699256-->
+        <p id="shrinkMe" class="shrinkable">
+            留下顏色簡歷立刻植物人群標籤完成記者創建投票承諾證明裝置，請求共享版軍隊腦袋地上當你學校隨後電信，
+            成了突然家族超過本帖小孩，蒐集能量上漲這款，領導瀏覽次數購物咖啡玻璃大眾公佈輸出隱藏發言，
+            完美是有真實性鏡頭顯然典型貢獻對你，達到全體一個休閒跟着練習二級，顧問千萬特徵考試姐姐力量，
+            一句話，緩緩本帖範。成記者創建投票承諾證明裝置，請求共享版軍隊腦袋地上當你學校隨後電信，
+            成了突然家族超過本帖小孩，蒐集能量上漲這款，領導瀏覽次數購物咖啡玻璃大眾公佈輸出隱藏發言，
+            完美是有真實性鏡頭顯然典型貢獻對你，達到全體一個休閒跟着練習二級，顧問千萬特徵考試姐姐力量，
+            一句話，緩緩本帖範成記者創建投票承諾證明裝置，請求共享版軍隊腦袋地上當你學校隨後電信，
+            成了突然家族超過本帖小孩，蒐集能量上漲這款，領導瀏覽次數購物咖啡玻璃大眾公佈輸出隱藏發言，
+            完美是有真實性鏡頭顯然典型貢獻對你，達到全體一個休閒跟着練習二級，顧問千萬特徵考試姐姐力量，
+            一句話，緩緩本帖範
+        </p>
+
+        <p id="shrinkMe2" class="shrinkable">
+            畢業生四個諮詢將其兩種出發進口有所所在地本月風情資產哈哈實驗，物理認真日子一定會傳說他是至少
+            有一種並不問道女友機械小心，負責人多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手機。小心，負責人多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手
+        </p>
+
+        <p id="shrinkMe3" class="shrinkable">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae,
+            voluptatum quodRepellendus ea libero quam nesciunt fuga rerum praesentium similique. Voluptates ad
+            ducimus, possimus ipsum accusantium similique Illo delectus est quos accusamus? Del labore dolores unde,
+            mollitia
+            totam! Ducimus ipsam illo voluptatibus fugit soluta sapiente, iste atque architecto
+            maxime.多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手機。小心，負責人多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手機。小心，負責人多種我的，福建推坑大魔王選手事務不說，更為行情業務建築什麼事
+            ，依據著名，為您會不會猶豫對待主動那時好好白色輸入服裝，好多轉讓處罰年代工具，城市財產女友研究
+            所本人成績風情注重暫無市委大會，主要疾病本地下載評分他就即可笑道禮物至今國際目的此次把握，多個大
+            力吃螺絲妻子特別是手</p>
+
+    </div>
+
+    <div class="wrapper">
+        <div class="content"></div>
+    </div>
+
+    <script>
+        // show more and less
+        function showMore(id) {
+            document.getElementById(id + 'Overflow').className = '';
+            document.getElementById(id + 'MoreLink').className = 'hidden';
+            document.getElementById(id + 'LessLink').className = '';
+        }
+
+        function showLess(id) {
+            document.getElementById(id + 'Overflow').className = 'hidden';
+            document.getElementById(id + 'MoreLink').className = '';
+            document.getElementById(id + 'LessLink').className = 'hidden';
+        }
+
+        const len = 100;
+        const shrinkables = document.getElementsByClassName('shrinkable');
+        if (shrinkables.length > 0) {
+            for (let i = 0; i < shrinkables.length; i++) {
+                const fullText = shrinkables[i].innerHTML;
+                if (fullText.length > len) {
+                    const trunc = fullText.substring(0, len).replace(/\w+$/, '');
+                    let remainder = "";
+                    const id = shrinkables[i].id;
+                    remainder = fullText.substring(len, fullText.length);
+                    shrinkables[i].innerHTML = '<span>' + trunc + '<span class="hidden" id="' + id + 'Overflow">' +
+                        remainder + '</span></span>&nbsp;<div><button id="' + id +
+                        'MoreLink" onclick="showMore(\'' +
+                        id + '\');">閱讀更多</button></div><button class="hidden" id="' + id +
+                        'LessLink" onclick="showLess(\'' +
+                        id + '\');">收起</button>';
+                }
+            }
+        }
+        // render data
+        function getData() {
+            fetch('./article.json')
+                .then(function (res) {
+                    return res.json()
+                })
+                .then(function (jsonData) {
+                    // console.log(jsonData)
+                    render(jsonData)
+                })
+
+        }
+
+        function render(d) {
+            // console.log(d)
+
+            const content = document.querySelector('.content')
+            // content.innerHTML = d.objlist.map(i => i)
+            d.objlist.forEach(i => {
+                console.log(i)
+                content.innerHTML += `<div>${i.name}</div><div>${i.article}</div><br>`
+            })
+
+
+        }
+
+        getData()
+    </script>
+</body>
+
+</html>
